@@ -16,9 +16,6 @@ export class Ausstattung {
     keller!: boolean;
 
     @Column('boolean')
-    kueche!: boolean;
-
-    @Column('boolean')
     garten!: boolean;
 
     @Column('boolean')
@@ -32,7 +29,6 @@ export class Ausstattung {
         JSON.stringify({
             id: this.id,
             keller: this.keller,
-            kueche: this.kueche,
             garten: this.garten,
             garage: this.garage,
         });
