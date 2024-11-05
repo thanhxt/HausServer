@@ -2,7 +2,7 @@ import {
     Column,
     Entity,
     JoinColumn,
-    ManyToOne,
+    OneToOne,
     PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Haus } from './haus.entity';
@@ -21,7 +21,7 @@ export class Ausstattung {
     @Column('boolean')
     garage!: boolean;
 
-    @ManyToOne(() => Haus, (haus) => haus.ausstattungen)
+    @OneToOne(() => Haus, (haus) => haus.ausstattung)
     @JoinColumn({ name: 'haus_id' })
     haus: Haus | undefined;
 
