@@ -14,7 +14,7 @@
 -- along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 -- docker compose exec postgres bash
--- psql --dbname=buch --username=buch --file=/scripts/create-table-buch.sql
+-- psql --dbname=haus --username=haus --file=/scripts/create-table-haus.sql
 
 -- text statt varchar(n):
 -- "There is no performance difference among these three types, apart from a few extra CPU cycles
@@ -24,75 +24,49 @@
 -- Indexe mit pgAdmin auflisten: "Query Tool" verwenden mit
 --  SELECT   tablename, indexname, indexdef, tablespace
 --  FROM     pg_indexes
---  WHERE    schemaname = 'buch'
+--  WHERE    schemaname = 'haus'
 --  ORDER BY tablename, indexname;
 
 -- https://www.postgresql.org/docs/devel/app-psql.html
 -- https://www.postgresql.org/docs/current/ddl-schemas.html
 -- https://www.postgresql.org/docs/current/ddl-schemas.html#DDL-SCHEMAS-CREATE
 -- "user-private schema" (Default-Schema: public)
-CREATE SCHEMA IF NOT EXISTS AUTHORIZATION buch;
+CREATE SCHEMA IF NOT EXISTS AUTHORIZATION haus;
 
-ALTER ROLE buch SET search_path = 'buch';
+ALTER ROLE haus SET search_path = 'haus';
 
 -- https://www.postgresql.org/docs/current/sql-createtype.html
 -- https://www.postgresql.org/docs/current/datatype-enum.html
-CREATE TYPE buchart AS ENUM ('EPUB', 'HARDCOVER', 'PAPERBACK');
+CREATE TYPE hausart AS ENUM ('Einfamilienhaus', 'Mehrfamilienhaus', 'Wohnung');
 
 -- https://www.postgresql.org/docs/current/sql-createtable.html
 -- https://www.postgresql.org/docs/current/datatype.html
-CREATE TABLE IF NOT EXISTS buch (
-                  -- https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-INT
-                  -- https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-PRIMARY-KEYS
-                  -- impliziter Index fuer Primary Key
-                  -- "GENERATED ALWAYS AS IDENTITY" gemaess SQL-Standard
-                  -- entspricht SERIAL mit generierter Sequenz buch_id_seq
-    id            integer GENERATED ALWAYS AS IDENTITY(START WITH 1000) PRIMARY KEY USING INDEX TABLESPACE buchspace,
-                  -- https://www.postgresql.org/docs/current/ddl-constraints.html#id-1.5.4.6.6
+
+CREATE TABLE IF NOT EXISTS haus (
+    id            integer GENERATED ALWAYS AS IDENTITY(START WITH 1000) PRIMARY KEY USING INDEX TABLESPACE hausspace,
     version       integer NOT NULL DEFAULT 0,
-                  -- impliziter Index als B-Baum durch UNIQUE
-                  -- https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-UNIQUE-CONSTRAINTS
-    isbn          text NOT NULL UNIQUE USING INDEX TABLESPACE buchspace,
-                  -- https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-CHECK-CONSTRAINTS
-                  -- https://www.postgresql.org/docs/current/functions-matching.html#FUNCTIONS-POSIX-REGEXP
-    rating        integer NOT NULL CHECK (rating >= 0 AND rating <= 5),
-    art           buchart,
-                  -- https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-NUMERIC-DECIMAL
-                  -- 10 Stellen, davon 2 Nachkommastellen
-    preis         decimal(8,2) NOT NULL,
-    rabatt        decimal(4,3) NOT NULL,
-                  -- https://www.postgresql.org/docs/current/datatype-boolean.html
-    lieferbar     boolean NOT NULL DEFAULT FALSE,
-                  -- https://www.postgresql.org/docs/current/datatype-datetime.html
-    datum         date,
-    homepage      text,
-    -- schlagwoerter json,
-    schlagwoerter text,
-                  -- https://www.postgresql.org/docs/current/datatype-datetime.html
-    erzeugt       timestamp NOT NULL DEFAULT NOW(),
-    aktualisiert  timestamp NOT NULL DEFAULT NOW()
-) TABLESPACE buchspace;
+    art           hausart NOT NULL,
+    stockwerk     integer NOT NULL CHECK (stockwerk >= 0),
+    zimmer        integer NOT NULL CHECK (zimmer >= 0),
+    preis         decimal(10,2) NOT NULL CHECK (preis >= 0),
+    groesse       decimal(10,2) NOT NULL CHECK (groesse >= 0),
+    standort      text NOT NULL,
+    schlagwoerter text
+) TABLESPACE hausspace;
 
-CREATE TABLE IF NOT EXISTS titel (
-    id          integer GENERATED ALWAYS AS IDENTITY(START WITH 1000) PRIMARY KEY USING INDEX TABLESPACE buchspace,
-    titel       text NOT NULL,
-    untertitel  text,
-    buch_id     integer NOT NULL UNIQUE USING INDEX TABLESPACE buchspace REFERENCES buch
-) TABLESPACE buchspace;
+CREATE TABLE IF NOT EXISTS ausstattung (
+    id            integer GENERATED ALWAYS AS IDENTITY(START WITH 1000) PRIMARY KEY USING INDEX TABLESPACE hausspace,
+    keller        boolean NOT NULL,
+    garten        boolean NOT NULL,
+    garage        boolean NOT NULL,
+    haus_id       integer NOT NULL REFERENCES haus
+) TABLESPACE hausspace;
 
-
-CREATE TABLE IF NOT EXISTS abbildung (
-    id              integer GENERATED ALWAYS AS IDENTITY(START WITH 1000) PRIMARY KEY USING INDEX TABLESPACE buchspace,
-    beschriftung    text NOT NULL,
-    content_type    text NOT NULL,
-    buch_id         integer NOT NULL REFERENCES buch
-) TABLESPACE buchspace;
-CREATE INDEX IF NOT EXISTS abbildung_buch_id_idx ON abbildung(buch_id) TABLESPACE buchspace;
-
-CREATE TABLE IF NOT EXISTS buch_file (
-    id              integer GENERATED ALWAYS AS IDENTITY(START WITH 1000) PRIMARY KEY USING INDEX TABLESPACE buchspace,
-    data            bytea NOT NULL,
-    filename        text NOT NULL,
-    buch_id         integer NOT NULL REFERENCES buch
-) TABLESPACE buchspace;
-CREATE INDEX IF NOT EXISTS buch_file_buch_id_idx ON buch_file(buch_id) TABLESPACE buchspace;
+CREATE TABLE IF NOT EXISTS bewohner (
+    id            integer GENERATED ALWAYS AS IDENTITY(START WITH 1000) PRIMARY KEY USING INDEX TABLESPACE hausspace,
+    vorname       text NOT NULL,
+    nachname      text NOT NULL,
+    alter         integer NOT NULL CHECK (alter >= 0),
+    beruf         text,
+    haus_id       integer NOT NULL REFERENCES haus
+) TABLESPACE hausspace;

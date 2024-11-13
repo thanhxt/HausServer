@@ -42,7 +42,7 @@ import {
  */
 @Injectable()
 export class DbPopulateService implements OnApplicationBootstrap {
-    readonly #tabellen = ['buch', 'titel', 'abbildung'];
+    readonly #tabellen = ['haus', 'bewohner', 'ausstattung'];
 
     readonly #datasource: DataSource;
 
@@ -54,20 +54,18 @@ export class DbPopulateService implements OnApplicationBootstrap {
     // https://docs.oracle.com/en/database/oracle/oracle-database/23/admin/managing-tables.html#GUID-2A801016-0399-4925-AD1B-A02683E81B59
     // https://docs.oracle.com/en/database/oracle/oracle-database/23/sutil/using-oracle-external-tables-examples.html
     // https://docs.oracle.com/en/database/oracle/oracle-database/23/sutil/oracle-sql-loader-commands.html
-    readonly #oracleInsertBuch = `
-        INSERT INTO buch(id,version,isbn,rating,art,preis,rabatt,lieferbar,datum,homepage,schlagwoerter,erzeugt,aktualisiert)
-        SELECT id,version,isbn,rating,art,preis,rabatt,lieferbar,datum,homepage,schlagwoerter,erzeugt,aktualisiert
+    readonly #oracleInsertHaus = `
+        INSERT INTO haus(id,version,name,adresse,plz,stadt,erzeugt,aktualisiert)
+        SELECT id,version,name,adresse,plz,stadt,erzeugt,aktualisiert
         FROM   EXTERNAL (
             (id            NUMBER(10,0),
             version       NUMBER(3,0),
-            isbn          VARCHAR2(17),
-            rating        NUMBER(1,0),
-            art           VARCHAR2(12),
+            art           VARCHAR2(125),
+            stockwerk     NUMBER(3,0),
+            zimmer        NUMBER(3,0),
             preis         NUMBER(8,2),
-            rabatt        NUMBER(4,3),
-            lieferbar     NUMBER(1,0),
-            datum         DATE,
-            homepage      VARCHAR2(40),
+            groesse       NUMBER(8,2),
+            standort      VARCHAR2(40),
             schlagwoerter VARCHAR2(64),
             erzeugt       TIMESTAMP,
             aktualisiert  TIMESTAMP)
@@ -83,47 +81,49 @@ export class DbPopulateService implements OnApplicationBootstrap {
                  erzeugt CHAR(19) date_format TIMESTAMP mask 'YYYY-MM-DD HH24:MI:SS',
                  aktualisiert CHAR(19) date_format TIMESTAMP mask 'YYYY-MM-DD HH24:MI:SS')
             )
-            LOCATION ('buch.csv')
+            LOCATION ('haus.csv')
             REJECT LIMIT UNLIMITED
-        ) buch_external
+        ) haus_external
     `;
 
-    readonly #oracleInsertTitel = `
-        INSERT INTO titel(id,titel,untertitel,buch_id)
-        SELECT id,titel,untertitel,buch_id
+    readonly #oracleInsertBewohner = `
+        INSERT INTO bewohner(id,version,name,vorname,geburtstag,haus_id)
+        SELECT id,version,name,vorname,geburtstag,haus_id
         FROM   EXTERNAL (
             (id         NUMBER(10,0),
-            titel       VARCHAR2(40),
-            untertitel  VARCHAR2(40),
-            buch_id     NUMBER(10,0))
+            version     NUMBER(3,0),
+            name        VARCHAR2(40),
+            vorname     VARCHAR2(40),
+            geburtstag  DATE,
+            haus_id     NUMBER(10,0))
             TYPE ORACLE_LOADER
             DEFAULT DIRECTORY csv_dir
             ACCESS PARAMETERS (
                 RECORDS DELIMITED BY NEWLINE
                 SKIP 1
                 FIELDS TERMINATED BY ';')
-            LOCATION ('titel.csv')
+            LOCATION ('bewohner.csv')
             REJECT LIMIT UNLIMITED
-        ) titel_external
+        ) bewohner_external
     `;
 
-    readonly #oracleInsertAbbildung = `
-        INSERT INTO abbildung(id,beschriftung,content_type,buch_id)
-        SELECT id,beschriftung,content_type,buch_id
+    readonly #oracleInsertAusstattung = `
+        INSERT INTO ausstattung(id,version,name,beschriftung,haus_id)
+        SELECT id,version,name,beschriftung,haus_id
         FROM   EXTERNAL (
             (id         NUMBER(10,0),
             beschriftung VARCHAR2(32),
             content_type VARCHAR2(16),
-            buch_id     NUMBER(10,0))
+            haus_id     NUMBER(10,0))
             TYPE ORACLE_LOADER
             DEFAULT DIRECTORY csv_dir
             ACCESS PARAMETERS (
                 RECORDS DELIMITED BY NEWLINE
                 SKIP 1
                 FIELDS TERMINATED BY ';')
-            LOCATION ('abbildung.csv')
+            LOCATION ('ausstattung.csv')
             REJECT LIMIT UNLIMITED
-        ) abbildung_external
+        ) ausstattung_external
     `;
 
     /**
@@ -240,9 +240,9 @@ export class DbPopulateService implements OnApplicationBootstrap {
         this.#logger.debug('createScript = %s', createScript);
         await this.#executeStatements(createScript, true);
 
-        await this.#oracleInsert(this.#oracleInsertBuch);
-        await this.#oracleInsert(this.#oracleInsertTitel);
-        await this.#oracleInsert(this.#oracleInsertAbbildung);
+        await this.#oracleInsert(this.#oracleInsertHaus);
+        await this.#oracleInsert(this.#oracleInsertBewohner);
+        await this.#oracleInsert(this.#oracleInsertAusstattung);
     }
 
     async #populateSQLite() {

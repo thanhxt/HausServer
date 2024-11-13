@@ -5,21 +5,21 @@ import {
     OneToOne,
     PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Haus } from './haus.entity';
+import { Haus } from './haus.entity.js';
 
 @Entity()
 export class Ausstattung {
     @PrimaryGeneratedColumn()
-    id!: number;
+    id: number | undefined;
 
     @Column('boolean')
-    keller!: boolean;
+    readonly keller!: boolean;
 
     @Column('boolean')
-    garten!: boolean;
+    readonly garten!: boolean;
 
     @Column('boolean')
-    garage!: boolean;
+    readonly garage!: boolean;
 
     @OneToOne(() => Haus, (haus) => haus.ausstattung)
     @JoinColumn({ name: 'haus_id' })

@@ -5,7 +5,7 @@ import {
     ManyToOne,
     PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Haus } from './haus.entity';
+import { Haus } from './haus.entity.js';
 
 @Entity()
 export class Bewohner {

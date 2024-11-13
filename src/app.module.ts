@@ -22,12 +22,11 @@ import {
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AdminModule } from './admin/admin.module.js';
-import { BuchModule } from './buch/buch.module.js';
-import { BuchGetController } from './buch/controller/buch-get.controller.js';
-import { BuchWriteController } from './buch/controller/buch-write.controller.js';
 import { DevModule } from './config/dev/dev.module.js';
 import { graphQlModuleOptions } from './config/graphql.js';
 import { typeOrmModuleOptions } from './config/typeormOptions.js';
+import { HausGetController } from './haus/controller/haus-get.controller.js';
+import { HausModule } from './haus/haus.module.js';
 import { LoggerModule } from './logger/logger.module.js';
 import { RequestLoggerMiddleware } from './logger/request-logger.middleware.js';
 import { KeycloakModule } from './security/keycloak/keycloak.module.js';
@@ -35,7 +34,7 @@ import { KeycloakModule } from './security/keycloak/keycloak.module.js';
 @Module({
     imports: [
         AdminModule,
-        BuchModule,
+        HausModule,
         DevModule,
         GraphQLModule.forRoot<ApolloDriverConfig>(graphQlModuleOptions),
         LoggerModule,
@@ -43,15 +42,11 @@ import { KeycloakModule } from './security/keycloak/keycloak.module.js';
         TypeOrmModule.forRoot(typeOrmModuleOptions),
     ],
 })
+// TODO: HausWriteController
 export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
         consumer
             .apply(RequestLoggerMiddleware)
-            .forRoutes(
-                BuchGetController,
-                BuchWriteController,
-                'auth',
-                'graphql',
-            );
+            .forRoutes(HausGetController, 'auth', 'graphql');
     }
 }

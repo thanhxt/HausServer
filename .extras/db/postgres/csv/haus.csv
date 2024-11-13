@@ -1,26 +1,26 @@
-id;art;stockwerk;zimmer;preis;groesse;standort
-1;Wohnung;2;3;250000;75;Berlin-Mitte
-2;Apartment;1;1;150000;35;Hamburg-Altona
-3;Penthouse;5;4;750000;120;München-Schwabing
-4;Maisonette;3;4;450000;95;Frankfurt-Nordend
-5;Studio;0;1;120000;30;Köln-Ehrenfeld
-6;Wohnung;4;2;280000;65;Stuttgart-West
-7;Loft;2;2;350000;80;Dresden-Neustadt
-8;Apartment;1;2;195000;45;Leipzig-Plagwitz
-9;Penthouse;6;5;980000;150;Düsseldorf-Oberkassel
-10;Studio;3;1;175000;40;Berlin-Kreuzberg
-11;Maisonette;2;3;425000;85;München-Au
-12;Wohnung;1;4;395000;95;Hamburg-Eimsbuettel
-13;Loft;4;2;420000;90;Berlin-Prenzlauer Berg
-14;Penthouse;7;6;1200000;180;Frankfurt-Westend
-15;Studio;0;1;145000;32;Köln-Nippes
-16;Apartment;3;2;225000;55;Bonn-Beuel
-17;Wohnung;2;3;310000;78;Hannover-List
-18;Maisonette;4;5;580000;125;München-Maxvorstadt
-19;Loft;1;2;295000;70;Berlin-Friedrichshain
-20;Studio;5;1;198000;38;Hamburg-Sternschanze
-21;Penthouse;8;4;890000;140;Stuttgart-Killesberg
-22;Apartment;2;2;245000;60;Nürnberg-Gostenhof
-23;Wohnung;3;3;335000;82;Bremen-Schwachhausen
-24;Loft;0;3;445000;95;Düsseldorf-Flingern
-25;Maisonette;5;4;520000;110;Berlin-Charlottenburg
+id;version;art;stockwerk;zimmer;preis;groesse;standort;schlagwoerter
+1;0;Wohnung;2;3;250000;75;Berlin-Mitte;Sternenhimmel
+2;0;Einfamilienhaus;1;1;150000;35;Hamburg-Altona;Wasserfall, Traumgarten
+3;0;Mehrfamilienhaus;5;4;750000;120;München-Schwabing;Himmelsleiter
+4;0;Einfamilienhaus;3;4;450000;95;Frankfurt-Nordend;Sternenhimmel, Wasserfall
+5;0;Wohnung;0;1;120000;30;Köln-Ehrenfeld;Traumgarten, Himmelsleiter
+6;0;Einfamilienhaus;4;2;280000;65;Stuttgart-West;Sternenhimmel, Traumgarten
+7;0;Wohnung;2;2;350000;80;Dresden-Neustadt;Wasserfall
+8;0;Einfamilienhaus;1;2;195000;45;Leipzig-Plagwitz;Himmelsleiter, Wasserfall
+9;0;Mehrfamilienhaus;6;5;980000;150;Düsseldorf-Oberkassel;Sternenhimmel, Himmelsleiter
+10;0;Wohnung;3;1;175000;40;Berlin-Kreuzberg;Traumgarten
+11;0;Einfamilienhaus;2;3;425000;85;München-Au;Wasserfall, Himmelsleiter
+12;0;Wohnung;1;4;395000;95;Hamburg-Eimsbuettel;Sternenhimmel, Traumgarten
+13;0;Mehrfamilienhaus;4;2;420000;90;Berlin-Prenzlauer Berg;Himmelsleiter
+14;0;Einfamilienhaus;7;6;1200000;180;Frankfurt-Westend;Wasserfall, Traumgarten
+15;0;Wohnung;0;1;145000;32;Köln-Nippes;Sternenhimmel
+16;0;Einfamilienhaus;3;2;225000;55;Bonn-Beuel;Himmelsleiter, Wasserfall
+17;0;Wohnung;2;3;310000;78;Hannover-List;Traumgarten, Himmelsleiter
+18;0;Mehrfamilienhaus;4;5;580000;125;München-Maxvorstadt;Sternenhimmel
+19;0;Wohnung;1;2;295000;70;Berlin-Friedrichshain;Wasserfall, Traumgarten
+20;0;Einfamilienhaus;5;1;198000;38;Hamburg-Sternschanze;Himmelsleiter
+21;0;Mehrfamilienhaus;8;4;890000;140;Stuttgart-Killesberg;Sternenhimmel, Wasserfall
+22;0;Einfamilienhaus;2;2;245000;60;Nürnberg-Gostenhof;Traumgarten
+23;0;Wohnung;3;3;335000;82;Bremen-Schwachhausen;Himmelsleiter, Wasserfall
+24;0;Einfamilienhaus;0;3;445000;95;Düsseldorf-Flingern;Sternenhimmel, Traumgarten
+25;0;Mehrfamilienhaus;5;4;520000;110;Berlin-Charlottenburg;Wasserfall

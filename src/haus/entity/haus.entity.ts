@@ -4,31 +4,45 @@ import {
     OneToMany,
     OneToOne,
     PrimaryGeneratedColumn,
+    VersionColumn,
 } from 'typeorm';
-import { Ausstattung } from './ausstattung.entity';
-import { Bewohner } from './bewohner.entity';
+import { Ausstattung } from './ausstattung.entity.js';
+import { Bewohner } from './bewohner.entity.js';
+
+/**
+ * Alias-Typ für gültige Strings bei der Art eines Hauses
+ */
+export type HausArt = 'Einfamilienhaus' | 'Mehrfamilienhaus' | 'Wohnung';
+
 @Entity()
 export class Haus {
     @PrimaryGeneratedColumn()
-    id: number | undefined;
+    readonly id: number | undefined;
+
+    @VersionColumn()
+    readonly version: number | undefined;
 
     @Column('varchar')
-    art: string | undefined;
+    readonly art: string | undefined;
 
     @Column('int')
-    stockwerk: number | undefined;
+    readonly stockwerk: number | undefined;
 
     @Column('int')
-    zimmer: number | undefined;
+    readonly zimmer: number | undefined;
 
     @Column('decimal', { precision: 10, scale: 2 })
-    preis: number | undefined;
+    readonly preis: number | undefined;
 
     @Column('decimal', { precision: 10, scale: 2 })
-    groesse: number | undefined;
+    readonly groesse: number | undefined;
 
     @Column('varchar')
-    standort: string | undefined;
+    readonly standort: string | undefined;
+
+    // nicht "readonly": null ersetzen durch []
+    @Column('simple-array')
+    schlagwoerter: string[] | null | undefined;
 
     @OneToOne(() => Ausstattung, (ausstattung) => ausstattung.haus, {
         cascade: ['insert', 'remove'],
@@ -39,4 +53,19 @@ export class Haus {
         cascade: ['insert', 'remove'],
     })
     readonly bewohner: Bewohner[] | undefined;
+
+    public toString(): string {
+        return JSON.stringify({
+            id: this.id,
+            version: this.version,
+            art: this.art,
+            stockwerk: this.stockwerk,
+            zimmer: this.zimmer,
+            preis: this.preis,
+            groesse: this.groesse,
+            standort: this.standort,
+            ausstattung: this.ausstattung,
+            bewohner: this.bewohner,
+        });
+    }
 }
