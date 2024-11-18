@@ -6,7 +6,7 @@ A Nestjs server which manages houses in a postgres database using the RestAPI an
 - Nest with
     - REST through Express
     - GraphQL through Apollo
-    - Or-Mapping through TypeORM in PostgresSQL and pgAdmin
+    - OR-Mapping through TypeORM in PostgresSQL and pgAdmin
     - Swagger
 - TypeSript, ESLint, Prettier, SonarQube
 - Jest with axios for integrationtests and Istanbul for test coverage
