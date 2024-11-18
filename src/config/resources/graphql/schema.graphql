@@ -22,16 +22,16 @@ schema {
 
 "Funktionen, um Bücherdaten zu lesen"
 type Query {
-  buecher(suchkriterien: SuchkriterienInput): [Buch!]
+  haeuser(suchkriterien: SuchkriterienInput): [Haus!]
 
-  buch(id: ID!): Buch
+  haus(id: ID!): Haus
 }
 
 "Funktionen, um Bücher neu anzulegen, zu aktualisieren oder zu löschen"
 type Mutation {
-  create(input: BuchInput!): CreatePayload
+  create(input: HausInput!): CreatePayload
 
-  update(input: BuchUpdateInput!): UpdatePayload
+  update(input: HausUpdateInput!): UpdatePayload
 
   delete(id: ID!): Boolean
 
@@ -40,96 +40,98 @@ type Mutation {
   refresh(refresh_token: String!): TokenResult
 }
 
-"Daten zum Titel eines Buches"
-type Titel {
-  titel: String!
-  untertitel: String
+"Daten zur Ausstattung eines Hauses"
+type Ausstattung {
+  keller: Boolean
+  garten: Boolean
+  garage: Boolean
 }
 
-"Daten zum Titel eines Buches"
-type Abbildung {
-  beschriftung: String!
-  contentType: String
+"Daten zum Bewohner eines Hauses"
+type Bewohner {
+  vorname: String
+  nachname: String
+  alter: Int
+  beruf: String
+  haus: Haus
 }
 
 "Datenschema zu einem Buch, das gelesen wird"
-type Buch {
+type Haus {
   # ID ist bei Apollo ein String
   id: Int!
   version: Int!
-  isbn: String!
-  rating: Int
-  art: Art
+  art: String!
+  stockwerk: Int!
+  zimmer: Int!
   preis: Float!
-  lieferbar: Boolean
-  datum: String
-  homepage: String
+  groesse: Float!
+  standort: String!
   schlagwoerter: [String]
   # 1:1-Beziehung
-  titel: Titel!
+  ausstattung: Ausstattung!
   # field mit @ResolveField
-  rabatt(short: Boolean): String!
+  bewohner: [Bewohner]
 }
 
 "Enum-Typ für die Art eines Buches"
 enum Art {
-  EPUB
-  HARDCOVER
-  PAPERBACK
+  EINFAMILIENHAUS
+  MEHRFAMILIENHAUS
+  WOHNUNG
 }
 
 "Suchkriterien für Bücher"
 input SuchkriterienInput {
-  titel: String
-  isbn: String
-  rating: Int
+  standort: String
   art: Art
-  lieferbar: Boolean
-}
-
-"Daten zum Titel eines neuen Buches"
-input TitelInput {
-  titel: String!
-  untertitel: String
-}
-
-"Daten zu den Abbildungen eines Buches"
-input AbbildungInput {
-  beschriftung: String!
-  contentType: String!
-}
-
-"Daten für ein neues Buch"
-input BuchInput {
-  isbn: String
-  rating: Int
-  art: Art
+  zimmer: Int
   preis: Float
-  rabatt: Float
-  lieferbar: Boolean
-  datum: String
-  homepage: String
+}
+
+"Daten zur Ausstattung eines neuen Hauses"
+input AusstattungInput {
+  keller: Boolean!
+  garten: Boolean!
+  garage: Boolean!
+}
+
+"Daten zu den Bewohnern eines Hauses"
+input BewohnerInput {
+  vorname: String!
+  nachname: String!
+  alter: Int!
+  beruf: String!
+}
+
+"Daten für ein neues Haus"
+input HausInput {
+  art: String!
+  stockwerk: Int!
+  zimmer: Int!
+  preis: Float!
+  groesse: Float!
+  standort: String!
   schlagwoerter: [String]
-  titel: TitelInput!
-  abbildungen: [AbbildungInput!]
+  ausstattung: AusstattungInput!
+  bewohner: [BewohnerInput!]
 }
 
 type CreatePayload {
   id: Int
 }
 
-"Daten für ein zu änderndes Buch"
-input BuchUpdateInput {
+"Daten für ein zu änderndes Haus"
+input HausUpdateInput {
   id: ID
   version: Int
-  isbn: String
-  rating: Int
-  art: Art
+  art: String
+  stockwerk: Int
+  zimmer: Int
+  groesse: Float
+  standort: String
   preis: Float
   rabatt: Float
-  lieferbar: Boolean
-  datum: String
-  homepage: String
   schlagwoerter: [String]
 }
 
