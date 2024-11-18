@@ -16,7 +16,16 @@ import {
     Res,
     UseInterceptors,
 } from '@nestjs/common';
-import { ApiProperty, ApiTags } from '@nestjs/swagger';
+import {
+    ApiHeader,
+    ApiNotFoundResponse,
+    ApiOkResponse,
+    ApiOperation,
+    ApiParam,
+    ApiProperty,
+    ApiResponse,
+    ApiTags,
+} from '@nestjs/swagger';
 import type { Request, Response } from 'express';
 import { Public } from 'nest-keycloak-connect';
 import { paths } from '../../config/paths.js';
@@ -139,6 +148,22 @@ export class HausGetController {
     // eslint-disable-next-line max-params
     @Get(':id')
     @Public()
+    @ApiOperation({ summary: 'Suche mit der Haus-ID' })
+    @ApiParam({
+        name: 'id',
+        description: 'Z.B. 1',
+    })
+    @ApiHeader({
+        name: 'If-None-Match',
+        description: 'Header für bedingte GET-Requests, z.B. "0"',
+        required: false,
+    })
+    @ApiOkResponse({ description: 'Das Haus wurde gefunden' })
+    @ApiNotFoundResponse({ description: 'Kein Haus zur ID gefunden' })
+    @ApiResponse({
+        status: HttpStatus.NOT_MODIFIED,
+        description: 'Das Haus wurde bereits heruntergeladen',
+    })
     async getById(
         @Param('id') idStr: string,
         @Req() req: Request,
@@ -197,6 +222,8 @@ export class HausGetController {
      */
     @Get()
     @Public()
+    @ApiOperation({ summary: 'Suche mit Suchkriterien' })
+    @ApiOkResponse({ description: 'Eine evtl. leere Liste mit Haeusen' })
     async get(
         @Query() query: HausQuery,
         @Req() req: Request,

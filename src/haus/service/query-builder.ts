@@ -108,6 +108,7 @@ export class QueryBuilder {
             props,
         );
 
+        // TODO: Ausstattung als Join
         let queryBuilder = this.#repo.createQueryBuilder(this.#hausAlias);
         // queryBuilder.innerJoinAndSelect(
         //     `${this.#hausAlias}.ausstattung`,

@@ -26,6 +26,7 @@ import { DevModule } from './config/dev/dev.module.js';
 import { graphQlModuleOptions } from './config/graphql.js';
 import { typeOrmModuleOptions } from './config/typeormOptions.js';
 import { HausGetController } from './haus/controller/haus-get.controller.js';
+import { HausWriteController } from './haus/controller/haus-write.controller.js';
 import { HausModule } from './haus/haus.module.js';
 import { LoggerModule } from './logger/logger.module.js';
 import { RequestLoggerMiddleware } from './logger/request-logger.middleware.js';
@@ -42,11 +43,15 @@ import { KeycloakModule } from './security/keycloak/keycloak.module.js';
         TypeOrmModule.forRoot(typeOrmModuleOptions),
     ],
 })
-// TODO: HausWriteController
 export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
         consumer
             .apply(RequestLoggerMiddleware)
-            .forRoutes(HausGetController, 'auth', 'graphql');
+            .forRoutes(
+                HausGetController,
+                HausWriteController,
+                'auth',
+                'graphql',
+            );
     }
 }

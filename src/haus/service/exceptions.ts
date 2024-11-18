@@ -16,6 +16,7 @@
 /* eslint-disable max-classes-per-file */
 
 import { HttpException, HttpStatus } from '@nestjs/common';
+import type { Haus } from '../entity/haus.entity';
 
 /**
  * Das Modul besteht aus den Klassen für die Fehlerbehandlung bei der Verwaltung
@@ -31,6 +32,14 @@ export class VersionInvalidException extends HttpException {
         super(
             `Die Versionsnummer ${version} ist ungueltig.`,
             HttpStatus.PRECONDITION_FAILED,
+        );
+    }
+}
+export class HausExistsException extends HttpException {
+    constructor(readonly haus: Haus) {
+        super(
+            `Das Haus mit dem Standort ${haus.standort} und der Art ${haus.art} existiert bereits.`,
+            HttpStatus.UNPROCESSABLE_ENTITY,
         );
     }
 }

@@ -17,8 +17,8 @@ import {
     MaxLength,
     ValidateNested,
 } from 'class-validator';
-import { AusstattungDTO } from './ausstattungDTO.entity';
-import { BewohnerDTO } from './bewohnerDTO.entity';
+import { AusstattungDTO } from './ausstattungDTO.entity.js';
+import { BewohnerDTO } from './bewohnerDTO.entity.js';
 
 /**
  * Entity-Klasse für das Haus ohne TypeORM und ohne Referenzen
