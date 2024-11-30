@@ -19,7 +19,7 @@ import {
     ValidationPipe,
 } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { v2 as compose } from 'docker-compose';
+import compose from 'docker-compose';
 import isPortReachable from 'is-port-reachable';
 import { Agent } from 'node:https';
 import path from 'node:path';

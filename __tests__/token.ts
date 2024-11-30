@@ -14,8 +14,6 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import { type AxiosInstance, type AxiosResponse } from 'axios';
-import { type GraphQLQuery } from './buch/buch-mutation.resolver.test.js';
-import { type GraphQLResponseBody } from './buch/buch-query.resolver.test.js';
 import { httpsAgent, tokenPath } from './testserver.js';
 
 type TokenResult = {
@@ -40,29 +38,4 @@ export const tokenRest = async (
         { headers, httpsAgent },
     );
     return response.data.access_token;
-};
-
-export const tokenGraphQL = async (
-    axiosInstance: AxiosInstance,
-    username: string = usernameDefault,
-    password: string = passwordDefault,
-): Promise<string> => {
-    const body: GraphQLQuery = {
-        query: `
-            mutation {
-                token(
-                    username: "${username}",
-                    password: "${password}"
-                ) {
-                    access_token
-                }
-            }
-        `,
-    };
-
-    const response: AxiosResponse<GraphQLResponseBody> =
-        await axiosInstance.post('graphql', body, { httpsAgent });
-
-    const data = response.data.data!;
-    return data.token.access_token; // eslint-disable-line @typescript-eslint/no-unsafe-return
 };
