@@ -15,6 +15,12 @@
 
 /* eslint-disable max-classes-per-file */
 
+/**
+ * Das Modul besteht aus den Klassen für die Fehlerbehandlung bei der Verwaltung
+ * von Büchern, z.B. beim DB-Zugriff.
+ * @packageDocumentation
+ */
+
 import { HttpException, HttpStatus } from '@nestjs/common';
 import type { Haus } from '../entity/haus.entity';
 

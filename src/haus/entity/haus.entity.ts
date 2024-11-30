@@ -1,3 +1,8 @@
+/**
+ * Das Modul besteht aus der Entity-Klasse.
+ * @packageDocumentation
+ */
+
 import {
     Column,
     Entity,
@@ -64,6 +69,7 @@ export class Haus {
             preis: this.preis,
             groesse: this.groesse,
             standort: this.standort,
+            schlagwoerter: this.schlagwoerter,
             ausstattung: this.ausstattung,
             bewohner: this.bewohner,
         });
