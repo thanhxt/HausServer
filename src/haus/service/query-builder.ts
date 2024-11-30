@@ -21,7 +21,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { typeOrmModuleOptions } from '../../config/typeormOptions.js';
 import { getLogger } from '../../logger/logger.js';
 import { Ausstattung } from '../entity/ausstattung.entity.js';
 import { Bewohner } from '../entity/bewohner.entity.js';
@@ -32,7 +31,7 @@ import { type Suchkriterien } from './suchkriterien.js';
 export type BuildIdParams = {
     /** ID des gesuchten Buchs. */
     readonly id: number;
-    /** Sollen die Abbildungen mitgeladen werden? */
+    /** Sollen die Bewohner mitgeladen werden? */
     readonly withBewohner?: boolean;
 };
 /**
@@ -66,13 +65,18 @@ export class QueryBuilder {
      * @param id ID des gesuchten Buches
      * @returns QueryBuilder
      */
-    buildId({ id, withBewohner: withAusstattung = false }: BuildIdParams) {
+    buildId({ id, withBewohner = false }: BuildIdParams) {
         // QueryBuilder "haus" fuer Repository<Haus>
         const queryBuilder = this.#repo.createQueryBuilder(this.#hausAlias);
 
+        // Fetch-Join: aus QueryBuilder "haus" die Property "bewohner" -> Tabelle "bewohner"
+        queryBuilder.innerJoinAndSelect(
+            `${this.#hausAlias}.ausstattung`,
+            this.#ausstattungAlias,
+        );
+
         // Fetch-Join: aus QueryBuilder "haus" die Property "ausstattung" -> Tabelle "ausstattung"
-        if (withAusstattung) {
-            // Fetch-Join: aus QueryBuilder "haus" die Property "bewohner" -> Tabelle "bewohner"
+        if (!withBewohner) {
             queryBuilder.leftJoinAndSelect(
                 `${this.#hausAlias}.bewohner`,
                 this.#bewohnerAlias,
@@ -89,7 +93,7 @@ export class QueryBuilder {
      */
     // z.B. { titel: 'a', rating: 5, javascript: true }
     // "rest properties" fuer anfaengliche WHERE-Klausel: ab ES 2018 https://github.com/tc39/proposal-object-rest-spread
-    // eslint-disable-next-line max-lines-per-function, sonarjs/cognitive-complexity
+    // eslint-disable-next-line max-lines-per-function
     build({
         ausstattung,
         sternenhimmel,
@@ -110,6 +114,10 @@ export class QueryBuilder {
 
         // TODO: Ausstattung als Join
         let queryBuilder = this.#repo.createQueryBuilder(this.#hausAlias);
+        queryBuilder.innerJoinAndSelect(
+            `${this.#hausAlias}.ausstattung`,
+            this.#ausstattungAlias,
+        );
         // queryBuilder.innerJoinAndSelect(
         //     `${this.#hausAlias}.ausstattung`,
         //     'ausstattung',
@@ -122,16 +130,13 @@ export class QueryBuilder {
 
         let useWhere = true;
 
-        // Titel in der Query: Teilstring des Titels und "case insensitive"
-        // CAVEAT: MySQL hat keinen Vergleich mit "case insensitive"
-        // type-coverage:ignore-next-line
+        // Falls ausstattung gesetzt, dann nur Haus mit der entsprechenden Ausstattung
         if (ausstattung !== undefined && typeof ausstattung === 'string') {
-            const ilike =
-                typeOrmModuleOptions.type === 'postgres' ? 'ilike' : 'like';
             queryBuilder = queryBuilder.where(
-                `${this.#ausstattungAlias}.ausstattung ${ilike} :ausstattung`,
-                { ausstattung: `%${ausstattung}%` },
+                `${this.#ausstattungAlias}.garage = :garage`,
+                { garage: ausstattung === 'true' },
             );
+            this.#logger.debug('build: ausstattung=%s', ausstattung);
             useWhere = false;
         }
 
