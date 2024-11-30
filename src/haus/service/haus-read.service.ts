@@ -59,7 +59,10 @@ export class HausReadService {
                 haus.ausstattung,
             );
             if (withBewohner) {
-                this.#logger.debug('findById: haus.bewohner=%o', haus.bewohner);
+                this.#logger.debug(
+                    'findById: haus.bewohner=%o',
+                    haus.ausstattung,
+                );
             }
         }
         return haus;
@@ -73,7 +76,6 @@ export class HausReadService {
             return this.#queryBuilder.build({}).getMany();
         }
         const keys = Object.keys(suchkriterien);
-        this.#logger.debug('find: keys=%o', keys);
         if (keys.length === 0) {
             return this.#queryBuilder.build(suchkriterien).getMany();
         }
@@ -87,7 +89,6 @@ export class HausReadService {
         // Das Resultat ist eine leere Liste, falls nichts gefunden
         // Lesen: keine Transaktion erforderlich
         const hauser = await this.#queryBuilder.build(suchkriterien).getMany();
-        this.#logger.debug('find: hauser=%o', hauser);
         if (hauser.length === 0) {
             this.#logger.debug('find: Keine Hauser gefunden');
             throw new NotFoundException(
