@@ -275,11 +275,11 @@ export class HausGetController {
             stockwerk: haus.stockwerk,
             zimmer: haus.zimmer,
             preis: haus.preis,
-            bewohner: haus.bewohner,
             groesse: haus.groesse,
             standort: haus.standort,
             schlagwoerter: haus.schlagwoerter,
             ausstattung: ausstattungModel,
+            bewohner: haus.bewohner,
             _links: links,
         };
 
