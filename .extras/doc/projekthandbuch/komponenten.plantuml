@@ -25,12 +25,12 @@ actor GraphQLClient
 node "Nest" {
   [RequestLoggerMiddleware]
 
-  [BuchController]
-  [BuchResolver]
+  [HausController]
+  [HausResolver]
 
-  [BuchService]
+  [HausService]
 
-  [Repository<Buch>]
+  [Repository<Haus>]
 
   [MailService]
 }
@@ -48,8 +48,8 @@ cloud {
     [nodemailer]
 }
 
-database "DB buch" {
-    [Tabelle buch]
+database "DB Haus" {
+    [Tabelle Haus]
     [Tabelle titel]
     [Tabelle abbildung]
 }
@@ -65,22 +65,22 @@ node {
 RESTClient ~~> [RequestLoggerMiddleware]
 GraphQLClient ~~> [RequestLoggerMiddleware]
 
-[RequestLoggerMiddleware] ~~> [BuchController]
-[RequestLoggerMiddleware] ~~> [BuchResolver]
+[RequestLoggerMiddleware] ~~> [HausController]
+[RequestLoggerMiddleware] ~~> [HausResolver]
 
-[BuchController] ..> [BuchService]
-[BuchResolver] ..> [BuchService]
-[BuchService] ..> [Repository<Buch>]
+[HausController] ..> [HausService]
+[HausResolver] ..> [HausService]
+[HausService] ..> [Repository<Haus>]
 
-[Repository<Buch>] ~~> [TypeORM]
-[TypeORM] ~~> [Tabelle buch]
+[Repository<Haus>] ~~> [TypeORM]
+[TypeORM] ~~> [Tabelle Haus]
 [TypeORM] ~~> [Tabelle titel]
 [TypeORM] ~~> [Tabelle abbildung]
 
-[BuchController] ..> [nest-keycloak-connect]
+[HausController] ..> [nest-keycloak-connect]
 [nest-keycloak-connect] ~~> [Keycloak]
 
-[BuchService] ..> [MailService]
+[HausService] ..> [MailService]
 [MailService] ~~> [nodemailer]
 [nodemailer] ~~> [Mailserver]
 

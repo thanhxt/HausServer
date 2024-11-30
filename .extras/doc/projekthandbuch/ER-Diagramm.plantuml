@@ -20,44 +20,44 @@
 ' hide the spot
 hide circle
 
-' evtl. Prbleme mit Kraehenfuessen vermeiden
+' avoid issues with crow's feet
 skinparam linetype ortho
 
-entity "Buch" {
+entity "Haus" {
   * id: integer <<generated>>
   --
   * version: integer
-  * isbn: text
-  * rating: number
   * art: text
-  * preis: number
-  * rabatt: number
-  * lieferbar: boolean
-    datum: date
-    homepage: text
-  * **titel_id**: integer <<FK>>
-    schlagwoerter: text
-  * erzeugt: timestamp
-  * aktualisiert: timestamp
+  * stockwerk: integer
+  * zimmer: integer
+  * preis: decimal(10,2)
+  * groesse: decimal(10,2)
+  * standort: text
+    schlagwoerter: text[]
 }
 
-entity "Titel" {
+entity "Ausstattung" {
   * id: integer <<generated>>
   --
-  * titel: text
-    untertitel: text
+  * keller: boolean
+  * garten: boolean
+  * garage: boolean
+  * **haus_id**: integer <<FK>>
 }
 
-entity "Abbildung" {
+entity "Bewohner" {
   * id: integer <<generated>>
   --
-  * beschriftung: text
-    contentType: text
-  * **buch_id**: integer <<FK>>
+  * vorname: text
+  * nachname: text
+  * alter: integer
+  * beruf: text
+  * **haus_id**: integer <<FK>>
 }
 
-Buch ||..|| Titel
-Buch ||..o{ Abbildung
+' Relationships
+Haus ||..|| Ausstattung
+Haus ||..o{ Bewohner
 
 footer (c) Jürgen Zimmermann
 

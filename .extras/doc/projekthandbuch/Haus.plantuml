@@ -1,0 +1,83 @@
+' Copyright (C) 2019 - present Juergen Zimmermann, Hochschule Karlsruhe
+'
+' This program is free software: you can redistribute it and/or modify
+' it under the terms of the GNU General Public License as published by
+' the Free Software Foundation, either version 3 of the License, or
+' (at your option) any later version.
+'
+' This program is distributed in the hope that it will be useful,
+' but WITHOUT ANY WARRANTY; without even the implied warranty of
+' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+' GNU General Public License for more details.
+'
+' You should have received a copy of the GNU General Public License
+' along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+' Preview durch <Alt>d
+
+@startuml Entity
+
+package typeorm {
+  class "@Entity" as Entity
+  hide Entity circle
+  class "@Column" as Column
+  hide Column circle
+  class "@PrimaryColumn" as PrimaryColumn
+  hide PrimaryColumn circle
+  class "@OneToMany" as OneToMany
+  hide OneToMany circle
+  class "@OneToOne" as OneToOne
+  hide OneToOne circle
+  class "@JoinColumn" as JoinColumn
+  hide JoinColumn circle
+  class "@ManyToOne" as ManyToOne
+  hide ManyToOne circle
+  class "@VersionColumn" as VersionColumn
+  hide VersionColumn circle
+}
+
+package haus.entity {
+  class "type HausArt = 'Einfamilienhaus' | 'Mehrfamilienhaus' | 'Wohnung'" as HausArt
+  hide HausArt circle
+
+  class Haus <<entity>> <<@Entity>> {
+    @PrimaryGeneratedColumn() readonly id: number
+    @VersionColumn() readonly version: number
+    @Column() readonly art: string
+    @Column() readonly stockwerk: number
+    @Column() readonly zimmer: number
+    @Column() readonly preis: number
+    @Column() readonly groesse: number
+    @Column() readonly standort: string
+    @Column() schlagwoerter: string[]
+  }
+
+  class Ausstattung <<entity>> <<@Entity>> {
+    @PrimaryGeneratedColumn() id: number
+    @Column() readonly keller: boolean
+    @Column() readonly garten: boolean
+    @Column() readonly garage: boolean
+  }
+
+  class Bewohner <<entity>> <<@Entity>> {
+    @PrimaryGeneratedColumn() id: number
+    @Column() vorname: string
+    @Column() nachname: string
+    @Column() alter: number
+    @Column() beruf: string
+  }
+
+  Haus *-right-> "1" Ausstattung : @OneToOne() \nausstattung
+  Haus *-down-> "*" Bewohner : @OneToMany() \nbewohner
+
+  Haus .up.> Entity
+  Haus .up.> HausArt
+  Ausstattung .up.> Entity
+  Bewohner .up.> Entity
+}
+
+hide empty members
+
+footer (c) Your Name
+
+@enduml

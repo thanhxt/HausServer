@@ -21,14 +21,14 @@ actor Gast
 actor Admin
 actor Kunde
 
-rectangle buch {
-    Gast --> (Buch suchen)
-    Admin --> (Buch suchen)
-    Admin --> (Buch anlegen)
-    Admin --> (Buch ändern)
-    Admin --> (Buch löschen)
-    Kunde --> (Buch suchen)
-    Kunde --> (Buch anlegen)
+rectangle haus {
+    Gast --> (Haus suchen)
+    Admin --> (Haus suchen)
+    Admin --> (Haus anlegen)
+    Admin --> (Haus ändern)
+    Admin --> (Haus löschen)
+    Kunde --> (Haus suchen)
+    Kunde --> (Haus anlegen)
     Kunde --> (Buch ändern)
 }
 
